@@ -1,0 +1,20 @@
+//JsonNode
+{
+  "name":"홍길동",
+  "age":10,
+  "cars":[
+    {
+      "name":"K5",
+      "carNumber":"11가 1111",
+      "type":"sedan"
+    },
+    {
+      "name":"Q5",
+      "carNumber":"22가 2222",
+      "type":"SUV"
+    }
+  ]
+}
+
+//JsonNode
+// Cars 같은 경우는 JsonNode의 새로운 Node
