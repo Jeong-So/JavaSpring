@@ -6,13 +6,15 @@ import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import javax.servlet.*;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 
 @Slf4j  // log를 남기기 위함
-@Component  // Spring에 대해 Bean으로 관리 필요
+//@Component  // Spring에 대해 Bean으로 관리 필요
+@WebFilter(urlPatterns = "/api/user/*")  // ApiController에만 filter 적용하는 방법 // String 배열로 여러가지 주소 설정
 public class GlobalFilter implements Filter {
 
     @Override
@@ -26,7 +28,7 @@ public class GlobalFilter implements Filter {
         ContentCachingRequestWrapper httpServletRequest = new ContentCachingRequestWrapper((HttpServletRequest)request);  // 이 클래스 사용 시 몇번이고 읽을 수 있음
         ContentCachingResponseWrapper httpServletResponse = new ContentCachingResponseWrapper((HttpServletResponse)response);
 
-        String url = httpServletRequest.getRequestURI(); // 어떤 주소 요청했는지 값 들어있음
+//        String url = httpServletRequest.getRequestURI(); // 어떤 주소 요청했는지 값 들어있음
 
 //        BufferedReader br = httpServletRequest.getReader();
 //
@@ -43,6 +45,8 @@ public class GlobalFilter implements Filter {
         // doFilter을 해야지 ContentCachingRequestWrapper 클래스 실행되면서 내용이 담김 (ContentCachingRequestWrapper 클래스 169열)
         chain.doFilter(httpServletRequest, httpServletResponse);
 
+        String url = httpServletRequest.getRequestURI(); // 어떤 주소 요청했는지 값 들어있음
+
         // 3. 후처리
         // doFilter 일어난 후 req 정보 읽기
         String reqContent = new String(httpServletRequest.getContentAsByteArray());
@@ -53,5 +57,9 @@ public class GlobalFilter implements Filter {
         int httpStatus = httpServletResponse.getStatus();
 
         log.info("response status : {}, response body : {}", httpStatus, resContent);
+
+        // client body 비어있음 : httpServletResponse.getContentAsByteArray()로 읽었기 때문에 커서가 내려가서 더이상 body에 내용 없음
+        // 읽었던 내용만큼 한번 더 복사 필요
+        httpServletResponse.copyBodyToResponse();
     }
 }
