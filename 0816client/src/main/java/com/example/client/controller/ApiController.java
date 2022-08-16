@@ -4,6 +4,7 @@ import com.example.client.dto.UserResponse;
 import com.example.client.service.RestTemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,7 +23,19 @@ public class ApiController {
     }
 
     @GetMapping("/hello")
-    public UserResponse getHello(){ // String -> UserResponse
+    public UserResponse getUser(){ // String -> UserResponse
         return restTemplateService.hello();
     }
+
+    @GetMapping("/user")
+    public UserResponse getPost(){ // String -> UserResponse
+        restTemplateService.post();
+        return new UserResponse();
+//        return restTemplateService.post(); // 1
+    }
+
+//    @PostMapping("/user")
+//    public UserResponse getUser(){ // String -> UserResponse
+//        return restTemplateService.post();
+//    }
 }

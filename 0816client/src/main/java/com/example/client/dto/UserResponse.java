@@ -1,5 +1,6 @@
 package com.example.client.dto;
 
+// get & post 둘 다 필요
 public class UserResponse {
 
     private String name;

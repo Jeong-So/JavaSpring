@@ -1,2 +1,2 @@
 1. RestTemplate 통해서 get으로 통신하는 방법
-2. uriComponentBuiler을 가지고 주소를 만드는 방법 
+2. uriComponentBuiler을 가지고 주소를 만드는 방법
