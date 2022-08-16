@@ -1,15 +1,17 @@
 package com.example.client.service;
 
+import com.example.client.dto.Req;
 import com.example.client.dto.UserRequest;
 import com.example.client.dto.UserResponse;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.MediaType;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class RestTemplateService {
@@ -84,6 +86,85 @@ public class RestTemplateService {
 
 //        return response.getBody();  // 1
 
+    }
+
+    public UserResponse exchange(){
+
+        // 1. 주소 만들기
+        URI uri = UriComponentsBuilder
+                .fromUriString("http://localhost:9090")
+                .path("/api/server/user/{userId}/name/{userName}")
+                .encode()
+                .build()
+                .expand(100,"steve")// expand : 순서대로 {}와 매칭
+                .toUri();
+        System.out.println(uri);
+
+        // 2. 보내고 싶은 request body 데이터 json으로 만드는게 아니라 object로 만들어서 보냄
+        // post기 때문에 http body가 있어야 함 (우리는 object만 보냄)
+        // object mapper가 json으로 바꿔서 rest template에서 http body에 json으로 넣어줌
+        // http body -> object -> object mapper -> json -> rest template -> http body json
+        UserRequest req = new UserRequest();
+        req.setName("steve");
+        req.setAge(10);
+
+        RequestEntity<UserRequest> requestEntity = RequestEntity  // 보낼때는 RequestEntity
+                .post(uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("x-authorization","abcd")
+                .header("custom-header","fffff")
+                .body(req);
+
+        // 3. 응답을 무엇으로 받을지만 지정
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<UserResponse> response = restTemplate.exchange(requestEntity, UserResponse.class);
+        return response.getBody();
+
+
+    }
+
+    public Req<UserResponse> genericExchange(){
+
+        // 1. 주소 만들기
+        URI uri = UriComponentsBuilder
+                .fromUriString("http://localhost:9090")
+                .path("/api/server/user/{userId}/name/{userName}")
+                .encode()
+                .build()
+                .expand(100,"steve")// expand : 순서대로 {}와 매칭
+                .toUri();
+        System.out.println(uri);
+
+        // 2. 보내고 싶은 request body 데이터 json으로 만드는게 아니라 object로 만들어서 보냄
+        // http body -> object -> object mapper -> json -> rest template -> http body json
+
+        UserRequest userRequest = new UserRequest();
+        userRequest.setName("steve");
+        userRequest.setAge(10);
+
+        Req<UserRequest> req = new Req<>();
+        req.setHeader(
+            new Req.Header()
+        );
+
+        req.setResBody(
+                userRequest
+        );
+
+        RequestEntity<Req<UserRequest>> requestEntity = RequestEntity  // 보낼때는 RequestEntity
+                .post(uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("x-authorization","abcd")
+                .header("custom-header","fffff")
+                .body(req);
+
+        // 3. 응답을 무엇으로 받을지만 지정
+        RestTemplate restTemplate = new RestTemplate();
+
+        ResponseEntity<Req<UserResponse>> response
+                = restTemplate.exchange(requestEntity, new ParameterizedTypeReference<>(){});  // generic에는 .class 붙을 수 없음
+
+        return response.getBody();  // 첫 getBody() : response의 getBody(), response안의 body 읽는거
     }
 
 }
