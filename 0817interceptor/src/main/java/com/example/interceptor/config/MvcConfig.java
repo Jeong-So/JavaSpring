@@ -24,6 +24,7 @@ public class MvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(authInterceptor).addPathPatterns("/api/private/*");
         // addPathPatterns : 검사하고 싶은 패턴 넣음 /api/private/ 하위 모든것 만 검사하겠다
         // excludePathPatterns : 검사 제외하고 싶은 패턴
+//        registry.addInterceptor(다른 인터셉터)  // 다른 인터셉터 지정 시 등록된 순서대로 인터셉터 작동
 
     }
 }
