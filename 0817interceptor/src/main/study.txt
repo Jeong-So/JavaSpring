@@ -1,0 +1,3 @@
+[Filter와 Interceptor 차이]
+1. Filter : web application에서 관리 --> handler object 없다
+2. Interceptor : Spring에서 관리 --> annotation, class 기능 활용 가능
