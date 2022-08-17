@@ -2,14 +2,23 @@ package com.example.async.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @Slf4j
 public class AsyncService {
 
+    @Async
+    public CompletableFuture run(){
+        return new AsyncResult(hello()).completable();
+    }
+    // CompletableFuture가 반환형일때 별도의 Thread에서 실행 시킴
+
     @Async // 비동기로 동작가능하게 함
-    public void hello(){
+    public String hello(){
 
         /*
         Thread thread = new Thread((new Runnable() {
@@ -33,5 +42,6 @@ public class AsyncService {
             }
         }
 
+        return "async hello";
     }
 }

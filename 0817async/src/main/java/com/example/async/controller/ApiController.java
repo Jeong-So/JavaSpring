@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.concurrent.CompletableFuture;
+
 @Slf4j
 @RestController
 @RequestMapping("/api")
@@ -25,6 +27,14 @@ public class ApiController {
 //        System.out.println("method end");
         log.info("method end");
         return "hello";
+
+    }
+
+    // CompletableFuture : 다른 Thread에서 실행을 시키고 결과를 반환받는 형태
+    @GetMapping("/comp")
+    public CompletableFuture comp(){
+        log.info("completable future init");
+        return asyncService.run();
 
     }
 }
