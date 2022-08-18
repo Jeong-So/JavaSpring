@@ -29,18 +29,19 @@ public class ApiController {
     }
 
     @GetMapping("/user")
-    public UserResponse getPost(){ // String -> UserResponse
+    public UserResponse getPost(){ // String(1) -> UserResponse(2)
         restTemplateService.post();
         return new UserResponse();
 //        return restTemplateService.post(); // 1
     }
 
     @GetMapping("/exchange")
-    public UserResponse getExchange(){ // String -> UserResponse
+    public UserResponse getExchange(){ // String(1) -> UserResponse(2)
         restTemplateService.exchange();
         return new UserResponse();
 //        return restTemplateService.post(); // 1
     }
+
 
     @GetMapping("/generic-exchange")
     public Req<UserResponse> getGenericExchange(){ //

@@ -42,16 +42,18 @@ public class ServerApiController {
 //        return user;
 //    }
 
+
     // generic exchange
+
     @PostMapping("/user/{userId}/name/{userName}")
     public Req<User> post(
-                          HttpEntity<String> entity,
+                          //HttpEntity<String> entity,
                           @RequestBody Req<User> user,
                           @PathVariable int userId,
                           @PathVariable String userName,
                           @RequestHeader("x-authorization") String authorization,
                           @RequestHeader("custom-header") String customHeader ){
-        log.info("req : {}", entity.getBody());
+        //log.info("req : {}", entity.getBody());
         log.info("userId : {}, userName : {}", userId, userName);
         log.info("authorization : {}, custom : {}", authorization, customHeader);
         log.info("client req : {}", user); // user의 toString이 {}에 들어감
@@ -62,8 +64,11 @@ public class ServerApiController {
         );
         response.setResBody(
                 user.getResBody()
+//                null
         );
 
         return response;
     }
+
 }
+

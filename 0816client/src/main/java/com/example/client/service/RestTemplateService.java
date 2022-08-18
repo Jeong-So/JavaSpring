@@ -3,6 +3,7 @@ package com.example.client.service;
 import com.example.client.dto.Req;
 import com.example.client.dto.UserRequest;
 import com.example.client.dto.UserResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
@@ -41,7 +42,7 @@ public class RestTemplateService {
 //        ResponseEntity<String> result = restTemplate.getForEntity(uri, String.class);
         ResponseEntity<UserResponse> result = restTemplate.getForEntity(uri, UserResponse.class);
 //        UserResponse result = restTemplate.getForObject(uri, UserResponse.class);
-        // 38, 39 같은 것 (header 이름이나 상세 정보 받기 위해선 ResponseEntity<UserResponse>로 받으면 좋음
+        // 43, 44 같은 것 (header 이름이나 상세 정보 받기 위해선 ResponseEntity<UserResponse>로 받으면 좋음
         // getForEntity : get은 http의 get을 뜻함 Entity로 가져오겠다
 
         System.out.println(result.getStatusCode());
@@ -53,7 +54,7 @@ public class RestTemplateService {
     // 2. post
     //http://localhost:9090/api/server/user/{userId}/name/{userName}
     // user 등록시키는 것을 만듬
-    public void post(){   // UserResponse(1) --> void
+    public void post(){   // UserResponse(1) --> void(2)
 
         // post로 보낼 때 방법
         // 1. 주소 만들기
@@ -78,7 +79,7 @@ public class RestTemplateService {
         RestTemplate restTemplate = new RestTemplate();
 //        ResponseEntity<UserResponse> response = restTemplate.postForEntity(uri, req, UserResponse.class); // 1
         //해당주소(uri)에 request body(req)를 만들어서 응답은 UserResponse 클래스로 받을거야
-        ResponseEntity<String> response = restTemplate.postForEntity(uri, req, String.class);  // 서버가 어떤 식으로 내려줄 지 모르니까 일단 String으로 찍겠다
+        ResponseEntity<String> response = restTemplate.postForEntity(uri, req, String.class);  // (@) 서버가 어떤 식으로 내려줄 지 모르니까 일단 String으로 찍겠다
 
         System.out.println(response.getStatusCode());
         System.out.println(response.getHeaders());
@@ -123,6 +124,7 @@ public class RestTemplateService {
 
     }
 
+    // body 내용이 바뀌는 경우 (Header은 같음) 재사용가능하게 하는 것
     public Req<UserResponse> genericExchange(){
 
         // 1. 주소 만들기
@@ -161,10 +163,35 @@ public class RestTemplateService {
         // 3. 응답을 무엇으로 받을지만 지정
         RestTemplate restTemplate = new RestTemplate();
 
-        ResponseEntity<Req<UserResponse>> response
-                = restTemplate.exchange(requestEntity, new ParameterizedTypeReference<>(){});  // generic에는 .class 붙을 수 없음
+        ResponseEntity<Req<UserResponse>> response = restTemplate.exchange(requestEntity, new ParameterizedTypeReference<>(){});
+        // generic에는 .class 붙을 수 없음 ( Req<UserResponse>.class--> new ParameterizedTypeReference<Req<UserResponse>>(){} )
 
         return response.getBody();  // 첫 getBody() : response의 getBody(), response안의 body 읽는거
     }
+
+    /*
+JSON 형태에서 BODY가 바뀔경우
+REQ 안에 REQ가 하나 더 들어감
+{
+    "header" : {
+        "response_code" : "OK"
+    },
+    "body" : {
+        "book" : "spring boot",
+        "page" : 1024
+    }
+}
+
+{
+    "header" : {
+        "response_code" : "OK"
+    },
+    "body" : {
+        "name" : "steve",
+        "age" : 10
+    }
+}
+
+ */
 
 }
