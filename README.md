@@ -1,2 +1,2 @@
 # JavaSpring
-Study_JavaSpring
+Study: JavaSpring
